@@ -2,9 +2,18 @@ package ch.maturaarbeit.util;
 
 import ch.maturaarbeit.ciphers.Cipher;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.lang.management.ThreadMXBean;
+
 public class Measure {
     private Cipher cipherToMeasure;
     private long cipherDuration;
+    private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+    private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
+
+
 
     public Measure(Cipher cipher){
         this.cipherToMeasure = cipher;
@@ -29,12 +38,31 @@ public class Measure {
     }
 
 
-    public String measureCipherRuntime(String plaintext, Object key){
-        long startingTime = System.currentTimeMillis();
-        String cipherText = cipherToMeasure.encrypt(plaintext, key);
-        long endingTime = System.currentTimeMillis();
-        cipherDuration = endingTime - startingTime;
+    public String measureCipher(String plaintext, Object key){
+        if (threadBean.isCurrentThreadCpuTimeSupported()) {
+            long cpuTimeBefore = threadBean.getCurrentThreadCpuTime();
+            long startingTime = System.currentTimeMillis();
+            MemoryUsage heapBefore = memoryBean.getHeapMemoryUsage();
+            String cipherText = cipherToMeasure.encrypt(plaintext, key);
+            doWork();
+            long endingTime = System.currentTimeMillis();
+            MemoryUsage heapAfter = memoryBean.getHeapMemoryUsage();
+            System.out.println("Used heap before: " + heapBefore.getUsed() / (1024 * 1024) + " MB");
+            System.out.println("Used heap after: " + heapAfter.getUsed() / (1024 * 1024) + " MB");
+            System.out.println("Difference: " + (heapAfter.getUsed() - heapBefore.getUsed()) / (1024 * 1024) + " MB");
+            cipherDuration = endingTime - startingTime;
+            long cpuTimeAfter = threadBean.getCurrentThreadCpuTime();
+            System.out.println("CPU time used: " + (cpuTimeAfter - cpuTimeBefore) / 1_000_000 + " ms");
+            return cipherText;
+        } else {
+            System.out.println("CPU time measurement not supported");
+        }
+        return "";
+    }
 
-        return cipherText;
+
+    public void doWork(){
+        int[] array = new int[10_000_00000]; // allocate some memory
+        for (int i = 0; i < array.length; i++) array[i] = i;
     }
 }

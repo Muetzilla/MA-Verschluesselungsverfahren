@@ -19,7 +19,7 @@ public class CipherManager {
         }
 
         for(Measure cm : cipherMesaures){
-            String cipherText = cm.measureCipherRuntime("hackme", 5);
+            String cipherText = cm.measureCipher("hackme", 5);
             long duration = cm.getCipherDuration();
             System.out.println("The encode text is: \"" + cipherText + "\" and the duration is: " + duration +  "ms.");
         }
