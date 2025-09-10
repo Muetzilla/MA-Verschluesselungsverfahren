@@ -2,6 +2,7 @@ package ch.maturaarbeit;
 
 import ch.maturaarbeit.ciphers.Cipher;
 import ch.maturaarbeit.ciphers.caesar.Caesar;
+import ch.maturaarbeit.ciphers.caesar.Hill;
 import ch.maturaarbeit.util.Measure;
 
 import java.util.ArrayList;
@@ -14,14 +15,17 @@ public class CipherManager {
 
     }
     public void manager(){
-        for (Cipher c : ciphers) {
-          cipherMesaures.add(new Measure(c));
-        }
+        Hill hill = new Hill();
+        hill.encrypt("MUETZILLA", "HILL", 2);
 
-        for(Measure cm : cipherMesaures){
-            String cipherText = cm.measureCipher("hackme", 5);
-            long duration = cm.getCipherDuration();
-            System.out.println("The encode text is: \"" + cipherText + "\" and the duration is: " + duration +  "ms.");
-        }
+//        for (Cipher c : ciphers) {
+//          cipherMesaures.add(new Measure(c));
+//        }
+//
+//        for(Measure cm : cipherMesaures){
+//            String cipherText = cm.measureCipher("hackme", 5);
+//            long duration = cm.getCipherDuration();
+//            System.out.println("The encode text is: \"" + cipherText + "\" and the duration is: " + duration +  "ms.");
+//        }
     }
 }
