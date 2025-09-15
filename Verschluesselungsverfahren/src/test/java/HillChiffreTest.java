@@ -1,4 +1,4 @@
-import ch.maturaarbeit.ciphers.caesar.Hill;
+import ch.maturaarbeit.ciphers.Hill;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
