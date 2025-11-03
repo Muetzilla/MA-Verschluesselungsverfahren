@@ -4,17 +4,22 @@ import ch.maturaarbeit.ciphers.Cipher;
 import ch.maturaarbeit.ciphers.CipherRegistry;
 import ch.maturaarbeit.ciphers.caesar.Caesar;
 import ch.maturaarbeit.ciphers.hill.Hill;
-import ch.maturaarbeit.ciphers.rsa.TestKeys;
+import ch.maturaarbeit.ciphers.playfair.Playfair;
+import ch.maturaarbeit.ciphers.rsa.RSA;
 import ch.maturaarbeit.util.FileImporter;
 import ch.maturaarbeit.util.Measure;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+
 import java.util.ArrayList;
 
 
 public class CipherManager {
     private ArrayList<Cipher> ciphers = new ArrayList<>();
+    private long[] RSA_TWO_DIGIT_PRIMES = {11, 17};
+    private long[] RSA_THREE_DIGIT_PRIMES = {571, 883};
+    private long[] RSA_FOUR_DIGIT_PRIMES = {3613, 4987};
+    private long[] RSA_FIVE_DIGIT_PRIMES = {10007, 10009};
+    private long[] RSA_SIX_DIGIT_PRIMES = {100003, 100019};
+    private long[] RSA_EIGHT_DIGIT_PRIMES = {50000741, 99999989};
 
 
     public CipherManager() {
@@ -27,15 +32,11 @@ public class CipherManager {
         FileImporter fileImporter = new FileImporter();
         Measure measure = new Measure();
 
-        KeyPair kp = TestKeys.quickRsa();
-        PublicKey pub = kp.getPublic();
-        PrivateKey prv = kp.getPrivate();
-
         CipherRegistry reg = new CipherRegistry();
         reg.register(new Caesar(5));
         reg.register(new Hill("HILL", 2));
-//        reg.register(new Playfair());
-//        reg.register(new RSA(pub));
+        reg.register(new Playfair("PLAYFAIR"));
+        reg.register(new RSA(RSA_SIX_DIGIT_PRIMES));
 
         for (int i = 0; i < reg.getRegisteredCiphers().size(); i++) {
             String s = reg.getRegisteredCiphers().keySet().toArray()[i].toString();

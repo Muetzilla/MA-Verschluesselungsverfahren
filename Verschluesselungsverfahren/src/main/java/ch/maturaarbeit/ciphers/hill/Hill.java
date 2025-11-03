@@ -10,6 +10,8 @@ import java.util.ArrayList;
 public class Hill implements Cipher<HillParams, HillParams> {
     private String key;
     private int blockSize;
+    private long operationsCount = 0;
+
 
     public Hill() {
 
@@ -17,6 +19,15 @@ public class Hill implements Cipher<HillParams, HillParams> {
     public Hill(String key, int blockSize) {
         this.key = key;
         this.blockSize = blockSize;
+    }
+    @Override
+    public long getOperationCount() {
+        return operationsCount;
+    }
+
+    @Override
+    public void setOperationCount(long operationsCount) {
+        this.operationsCount = operationsCount;
     }
 
     public String getKey() {
@@ -44,10 +55,12 @@ public class Hill implements Cipher<HillParams, HillParams> {
         if (plaintext.length() % blockSize != 0) {
             int charsToAdd = blockSize - (plaintext.length() % blockSize);
             for (int i = 0; i < charsToAdd; i++) {
-                results[results.length - 1] += "X"; // add X to the last block
+                results[results.length - 1] += "X";
             }
         }
+        //TODO think if this increases operations count
         for (String result : results) {
+
             SimpleMatrix tempVector = new SimpleMatrix(blockSize, 1);
 
             for (int i = 0; i < result.length(); i++) {
@@ -68,11 +81,13 @@ public class Hill implements Cipher<HillParams, HillParams> {
         ArrayList<SimpleMatrix> multipliedVectors = new ArrayList<>();
         for (SimpleMatrix vector : plaintextBlocks) {
             multipliedVectors.add(keyMatrix.mult(vector));
+            operationsCount++;
         }
         for (SimpleMatrix v : multipliedVectors) {
             for (int i = 0; i < v.numRows(); i++) {
                 double value = v.get(i, 0);
                 cipherText.append((char) ((int) (value % 26) + 65));
+                operationsCount++;
             }
         }
         return cipherText.toString();

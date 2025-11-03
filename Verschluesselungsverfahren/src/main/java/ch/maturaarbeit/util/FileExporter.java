@@ -12,7 +12,7 @@ import java.util.Map;
 public class FileExporter {
     public static void saveResultsAsJson(String filePath,
                                          Map<Integer, List<Long>> wallTimesByLen,
-                                         Map<Integer, List<Long>> cpuTimesByLen) {
+                                         Map<Integer, List<Long>> cpuTimesByLen, Map<Integer, Long> operationsNumber) {
         Map<Integer, Map<String, Object>> exportData = new LinkedHashMap<>();
 
         for (Map.Entry<Integer, List<Long>> entry : wallTimesByLen.entrySet()) {
@@ -29,12 +29,20 @@ public class FileExporter {
                 values.put("cpu_avg", avg(cpuTimes));
             }
 
+            Long ops = operationsNumber.get(textLen);
+            if (ops != null) {
+                values.put("operations_number", ops);
+            }
+
             exportData.put(textLen, values);
         }
 
+        Map<String, Object> root = new LinkedHashMap<>();
+        root.put("textLen", exportData);
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (FileWriter writer = new FileWriter(filePath)) {
-            gson.toJson(exportData, writer);
+            gson.toJson(root, writer);
             System.out.println("Ergebnisse erfolgreich gespeichert als JSON: " + filePath);
         } catch (IOException e) {
             System.err.println("Fehler beim Speichern der JSON-Datei: " + e.getMessage());

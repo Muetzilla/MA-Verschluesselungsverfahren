@@ -9,6 +9,7 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
 //    private double numberOfOperations = 0;
 
     private int key;
+    private long operationsCount = 0;
 
     public Caesar(int key){
         this.key = key;
@@ -27,6 +28,16 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
     }
 
     @Override
+    public long getOperationCount() {
+        return operationsCount;
+    }
+
+    @Override
+    public void setOperationCount(long operationsCount) {
+        this.operationsCount = operationsCount;
+    }
+
+    @Override
     public String name() {
         return "Caesar";
     }
@@ -42,7 +53,7 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
     }
 
     private String caesarEncrypt(String text, int key) {
-        var sb = new StringBuilder(text.length());
+        StringBuilder sb = new StringBuilder(text.length());
         for (char c : text.toCharArray()) {
             if (c >= 'A' && c <= 'Z') {
                 sb.append((char) ('A' + (c - 'A' + key) % 26));
@@ -51,6 +62,7 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
             } else {
                 sb.append(c);
             }
+            operationsCount++;
         }
         return sb.toString();
     }

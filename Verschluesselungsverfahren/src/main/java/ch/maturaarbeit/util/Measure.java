@@ -2,16 +2,12 @@ package ch.maturaarbeit.util;
 
 import ch.maturaarbeit.CipherManager;
 import ch.maturaarbeit.ciphers.Cipher;
-import ch.maturaarbeit.ciphers.hill.HillParams;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadMXBean;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Measure {
     private Cipher cipherToMeasure;
@@ -22,8 +18,9 @@ public class Measure {
 
     private final String[] FILE_PATHS = {
             "src/main/resources/input/10_chars.txt",
-            "src/main/resources/input/20_chars.txt",
-            "src/main/resources/input/30_chars.txt",
+//            "src/main/resources/input/20_chars.txt",
+//            "src/main/resources/input/30_chars.txt",
+//            "src/main/resources/input/50_chars.txt",
             "src/main/resources/input/100_chars.txt",
             "src/main/resources/input/1000_chars.txt",
             "src/main/resources/input/5000_chars.txt",
@@ -35,7 +32,7 @@ public class Measure {
 //    private final String[] FILE_PATHS = {"src/main/resources/input/10_chars.txt", "src/main/resources/input/20_chars.txt", "src/main/resources/input/30_chars.txt"};
     private ArrayList<Measure> cipherMesaures = new ArrayList<>();
     private long cipherDuration;
-    private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
+    private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean(); 
     private ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 
 
@@ -65,13 +62,14 @@ public class Measure {
 
 
     public String measureCipher(Cipher cipher){
-        int N = 50; // Anzahl der Messläufe
-        int WARMUP_RUNS = 10; // Warm-up Durchläufe (nicht gemessen)
+        int NUMBER_OF_RUNS = 5;
+        int WARMUP_RUNS = 1;
         FileImporter fileImporter = new FileImporter();
 
 
         Map<Integer, List<Long>> wallTimesByLen = new LinkedHashMap<>();
         Map<Integer, List<Long>> cpuTimesByLen  = new LinkedHashMap<>();
+        Map<Integer, Long> operationsNumber  = new LinkedHashMap<>();
 
         boolean cpuSupported = threadBean.isCurrentThreadCpuTimeSupported();
         if (cpuSupported && !threadBean.isThreadCpuTimeEnabled()) {
@@ -89,12 +87,13 @@ public class Measure {
             }
             System.out.println("Warm-up (" + WARMUP_RUNS + " Durchläufe) abgeschlossen.");
 
-            List<Long> wallTimes = new ArrayList<>(N);
-            List<Long> cpuTimes  = new ArrayList<>(N);
+            List<Long> wallTimes = new ArrayList<>(NUMBER_OF_RUNS);
+            List<Long> cpuTimes  = new ArrayList<>(NUMBER_OF_RUNS);
 
             MemoryUsage heapBeforeOnce = memoryBean.getHeapMemoryUsage();
+            cipher.setOperationCount(0);
 
-            for (int run = 1; run <= N; run++) {
+            for (int run = 1; run <= NUMBER_OF_RUNS; run++) {
                 long startWall = System.currentTimeMillis();
                 long startCpu  = cpuSupported ? threadBean.getCurrentThreadCpuTime() : 0L;
 
@@ -121,6 +120,7 @@ public class Measure {
 
             wallTimesByLen.put(len, wallTimes);
             if (cpuSupported) cpuTimesByLen.put(len, cpuTimes);
+            operationsNumber.put(len, cipher.getOperationCount() / NUMBER_OF_RUNS);
 
             // --- Ausgabe ---
             System.out.println("Wall times (ms): " + wallTimes);
@@ -134,7 +134,7 @@ public class Measure {
             System.out.println("Difference:       " + diffMB       + " MB");
         }
         String outputPath = "src/main/resources/output/" + cipher.name() + "_benchmark.json";
-        FileExporter.saveResultsAsJson(outputPath, wallTimesByLen, cpuTimesByLen);
+        FileExporter.saveResultsAsJson(outputPath, wallTimesByLen, cpuTimesByLen, operationsNumber);
 
         return "";
 }
