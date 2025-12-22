@@ -42,7 +42,7 @@ public class RSA implements Cipher<RSAParams, RSAParams>{
             long c = 1;
             for (int i = 0; i < e; i++) {
                 c = (c * m) % n;
-                //Anzahl Operationen muss erhöht werden, da hier die Verschlüsselung mittels Multiklikation und Modulo durchgeführt wird.
+                //Anzahl Operationen muss erhöht werden, da hier die Verschlüsselung mittels Multiplikation und Modulo durchgeführt wird.
                 operationsCount++;
             }
             char cipherChar = (char) c;
