@@ -1,12 +1,10 @@
 package ch.maturaarbeit.ciphers.caesar;
 
 import ch.maturaarbeit.ciphers.Cipher;
-import ch.maturaarbeit.ciphers.DecryptParams;
-import ch.maturaarbeit.ciphers.EncryptParams;
+
 
 public class Caesar implements Cipher<CaesarParams, CaesarParams> {
 
-//    private double numberOfOperations = 0;
 
     private int key;
     private long operationsCount = 0;
@@ -14,12 +12,9 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
     public Caesar(int key){
         this.key = key;
     }
-    public Caesar(){
-
-    }
+    public Caesar(){    }
 
     public int getKey() {
-
         return key;
     }
 
@@ -66,6 +61,7 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
         }
         return sb.toString();
     }
+
 
 //    @Override
 //    public String encrypt(String plaintext, Object key) {
