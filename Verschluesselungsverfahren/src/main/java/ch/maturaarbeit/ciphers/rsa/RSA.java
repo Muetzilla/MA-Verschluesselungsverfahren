@@ -42,23 +42,25 @@ public class RSA implements Cipher<RSAParams, RSAParams>{
         StringBuilder ciphertext = new StringBuilder();
         for (char character : plaintext.toCharArray()) {
             long m = (long) character;
+            // Anzahl Operationen wird erhöht, da das Zeichen in eine Zahl umgewandelt werden muss.
+            operationsCount++;
             long c = 1;
             for (int i = 0; i < e; i++) {
                 c = (c * m) % n;
+                //Anzahl Operationen muss erhöht werden, da hier die Verschlüsselung mittels Multiklikation und Modulo durchgeführt wird.
                 operationsCount++;
             }
-            ciphertext.append(c).append(" ");
+            char cipherChar = (char) c;
+            // Anzahl Operationen wird erhöht, da die verschlüsselte Zahl wieder in ein Zeichen umgewandelt wird.
+            operationsCount++;
+
+            ciphertext.append(cipherChar).append(" ");
+            // Anzahl Operationen wird erhöht, da die verschlüsselte Zahl zum Ciphertext hinzugefügt wird.
             operationsCount++;
         }
-        return "";
-//        try {
-//            var cipher = javax.crypto.Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
-//            cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, publicKey);
-//            byte[] ct = cipher.doFinal(plaintext.getBytes(java.nio.charset.StandardCharsets.UTF_8));
-//            return java.util.Base64.getEncoder().encodeToString(ct);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
+        System.out.println("Ciphertext: " + ciphertext);
+        return ciphertext.toString();
+
     }
 
     @Override
