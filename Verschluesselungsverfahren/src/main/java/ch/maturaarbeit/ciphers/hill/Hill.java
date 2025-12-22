@@ -76,7 +76,7 @@ public class Hill implements Cipher<HillParams, HillParams> {
             for (int j = 0; j < blockSize; j++) {
                 keyMatrix.set(i, j, (int) key.charAt(keyCharCounter) - 65);
                 keyCharCounter++;
-                // Anzahl der Operationen wird erhöht, da die Schlüsselmatrik Schritt für Schritt aufgebaut und befüllt werden muss.
+                // Anzahl der Operationen wird erhöht, da die Schlüsselmatrix Schritt für Schritt aufgebaut und befüllt werden muss.
                 operationsCount++;
             }
         }
