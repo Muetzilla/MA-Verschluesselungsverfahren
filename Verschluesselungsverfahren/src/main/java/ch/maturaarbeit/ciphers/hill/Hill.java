@@ -1,7 +1,5 @@
 package ch.maturaarbeit.ciphers.hill;
 import ch.maturaarbeit.ciphers.Cipher;
-import ch.maturaarbeit.ciphers.DecryptParams;
-import ch.maturaarbeit.ciphers.EncryptParams;
 import org.ejml.simple.SimpleMatrix;
 
 import java.util.ArrayList;

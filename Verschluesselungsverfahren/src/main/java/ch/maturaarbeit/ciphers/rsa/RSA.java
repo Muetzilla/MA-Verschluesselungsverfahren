@@ -4,14 +4,9 @@ import ch.maturaarbeit.ciphers.Cipher;
 
 
 public class RSA implements Cipher<RSAParams, RSAParams>{
-//    private final java.security.PublicKey publicKey;
-//
-//    public RSA(java.security.PublicKey publicKey) {
-//        this.publicKey = publicKey;
-//    }
-    private long[] publicKey ; // e, npublic RSA(){
-    private long operationsCount = 0;
 
+    private long[] publicKey ;
+    private long operationsCount = 0;
 
 
     public RSA(long[] publicKey){
