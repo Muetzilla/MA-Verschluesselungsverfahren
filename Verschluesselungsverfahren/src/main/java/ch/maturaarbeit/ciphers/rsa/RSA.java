@@ -36,7 +36,7 @@ public class RSA implements Cipher<RSAParams, RSAParams>{
         long n = publicKey[1];
         StringBuilder ciphertext = new StringBuilder();
         for (char character : plaintext.toCharArray()) {
-            long m = (long) character;
+            long m = character;
             // Anzahl Operationen wird erhöht, da das Zeichen in eine Zahl umgewandelt werden muss.
             operationsCount++;
             long c = 1;
