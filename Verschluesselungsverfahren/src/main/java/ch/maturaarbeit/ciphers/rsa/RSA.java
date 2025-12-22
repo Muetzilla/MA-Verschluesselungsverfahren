@@ -53,7 +53,6 @@ public class RSA implements Cipher<RSAParams, RSAParams>{
             // Anzahl Operationen wird erhöht, da die verschlüsselte Zahl zum Ciphertext hinzugefügt wird.
             operationsCount++;
         }
-        System.out.println("Ciphertext: " + ciphertext);
         return ciphertext.toString();
 
     }
