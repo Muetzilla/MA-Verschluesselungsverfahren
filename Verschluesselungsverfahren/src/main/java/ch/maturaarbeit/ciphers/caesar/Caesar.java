@@ -3,7 +3,11 @@ package ch.maturaarbeit.ciphers.caesar;
 import ch.maturaarbeit.ciphers.Cipher;
 
 
-public class Caesar implements Cipher<CaesarParams, CaesarParams> {
+/**
+ * @Author
+ * Implementiert die Cäsar Chffre
+ */
+public class Caesar implements Cipher<CaesarParams> {
 
 
     private int key;
@@ -37,16 +41,22 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
         return "Caesar";
     }
 
+    /**
+     * Cäsar Chiffre Verschlüsselung
+     * @param plaintext der Klartext
+     * @return der verschlüsselte Text
+     */
     @Override
     public String encrypt(String plaintext) {
         return caesarEncrypt(plaintext, key);
     }
 
-    @Override
-    public String decrypt(String ciphertext, CaesarParams params) {
-        return "";
-    }
-
+    /**
+     * Cäsar Chiffre Verschlüsselung
+     * @param text Der Klartext
+     * @param key Der Schlüssel zur Verschlüsselung
+     * @return Der verschlüsselte Text
+     */
     private String caesarEncrypt(String text, int key) {
         StringBuilder sb = new StringBuilder(text.length());
         for (char c : text.toCharArray()) {
@@ -62,13 +72,4 @@ public class Caesar implements Cipher<CaesarParams, CaesarParams> {
         return sb.toString();
     }
 
-
-//    @Override
-//    public String encrypt(String plaintext, Object key) {
-//        StringBuffer ciphertext = new StringBuffer();
-//        for (int i = 0; i < plaintext.length(); i++) {
-//            ciphertext.append(plaintext.charAt(i));
-//        }
-//        return ciphertext.toString();
-//    }
 }

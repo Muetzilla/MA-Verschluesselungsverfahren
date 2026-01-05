@@ -1,5 +1,9 @@
 package ch.maturaarbeit;
 
+/**
+ * @Author
+ * Hauptklasse der Applikation
+ */
 public class Main {
     public Main(){
         CipherManager cp = new CipherManager();

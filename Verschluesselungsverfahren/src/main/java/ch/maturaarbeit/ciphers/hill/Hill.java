@@ -4,8 +4,11 @@ import org.ejml.simple.SimpleMatrix;
 
 import java.util.ArrayList;
 
-
-public class Hill implements Cipher<HillParams, HillParams> {
+/**
+ * @Author
+ * Implementiert die Hill Chiffre
+ */
+public class Hill implements Cipher<HillParams> {
     private String key;
     private int blockSize;
     private long operationsCount = 0;
@@ -36,16 +39,14 @@ public class Hill implements Cipher<HillParams, HillParams> {
         this.key = key;
     }
 
-    public int getBlockSize() {
-        return blockSize;
-    }
-
-    public void setBlockSize(int blockSize) {
-        this.blockSize = blockSize;
-    }
-
+    /**
+     * Hill Chiffre Verschlüsselung
+     * @param plaintext der Klartext
+     * @param key das Schlüsselwort
+     * @param blockSize die Länge der Blöcke und Grösse der Vektoren
+     * @return der verschlüsselte Text
+     */
     public String hillEncrypt(String plaintext, String key, int blockSize) {
-//        plaintext = plaintext.toUpperCase();
         ArrayList<SimpleMatrix> plaintextBlocks = new ArrayList<>();
         SimpleMatrix keyMatrix = new SimpleMatrix(blockSize, blockSize);
         StringBuilder cipherText = new StringBuilder();
@@ -54,8 +55,6 @@ public class Hill implements Cipher<HillParams, HillParams> {
             int charsToAdd = blockSize - (plaintext.length() % blockSize);
             for (int i = 0; i < charsToAdd; i++) {
                 results[results.length - 1] += "X";
-                // Möglicherweise hier operationsCount++
-                // operationsCount++;
             }
         }
 
@@ -76,8 +75,6 @@ public class Hill implements Cipher<HillParams, HillParams> {
             for (int j = 0; j < blockSize; j++) {
                 keyMatrix.set(i, j, (int) key.charAt(keyCharCounter) - 65);
                 keyCharCounter++;
-                // Anzahl der Operationen wird erhöht, da die Schlüsselmatrix Schritt für Schritt aufgebaut und befüllt werden muss.
-                operationsCount++;
             }
         }
 
@@ -87,6 +84,7 @@ public class Hill implements Cipher<HillParams, HillParams> {
             // Anzahl der Operationen wird erhöht, da die Matrixmultiplikation durchgeführt wird.
             operationsCount++;
         }
+
 
         for (SimpleMatrix v : multipliedVectors) {
             for (int i = 0; i < v.numRows(); i++) {
@@ -99,19 +97,23 @@ public class Hill implements Cipher<HillParams, HillParams> {
         return cipherText.toString();
     }
 
-
+    /**
+     * Name der Chiffre
+     * @return Der Name der Chiffre
+     */
     @Override
     public String name() {
         return "Hill";
     }
 
+    /**
+     * Verschlüsselung des Klartexts
+     * @param plaintext der Klartext
+     * @return der verschlüsselte Text
+     */
     @Override
     public String encrypt(String plaintext) {
         return hillEncrypt(plaintext, key, blockSize);
     }
 
-    @Override
-    public String decrypt(String ciphertext, HillParams params) {
-        return "";
-    }
 }

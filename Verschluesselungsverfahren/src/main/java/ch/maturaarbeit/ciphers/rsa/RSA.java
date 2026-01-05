@@ -2,8 +2,16 @@ package ch.maturaarbeit.ciphers.rsa;
 
 import ch.maturaarbeit.ciphers.Cipher;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
 
-public class RSA implements Cipher<RSAParams, RSAParams>{
+/**
+ * @Author
+ * Implementiert die RSA Chiffre
+ */
+public class RSA implements Cipher<RSAParams >{
 
     private long[] publicKey ;
     private long operationsCount = 0;
@@ -30,35 +38,38 @@ public class RSA implements Cipher<RSAParams, RSAParams>{
         return "RSA";
     }
 
+    /**
+     * RSA Chiffre Verschlüsselung
+     * @param plaintext der Klartext
+     * @return der verschlüsselte Text
+     */
     @Override
     public String encrypt(String plaintext) {
-        long e = publicKey[0];
-        long n = publicKey[1];
-        StringBuilder ciphertext = new StringBuilder();
-        for (char character : plaintext.toCharArray()) {
-            long m = character;
-            // Anzahl Operationen wird erhöht, da das Zeichen in eine Zahl umgewandelt werden muss.
-            operationsCount++;
-            long c = 1;
-            for (int i = 0; i < e; i++) {
-                c = (c * m) % n;
-                //Anzahl Operationen muss erhöht werden, da hier die Verschlüsselung mittels Multiplikation und Modulo durchgeführt wird.
-                operationsCount++;
-            }
-            char cipherChar = (char) c;
-            // Anzahl Operationen wird erhöht, da die verschlüsselte Zahl wieder in ein Zeichen umgewandelt wird.
+        BigInteger e = BigInteger.valueOf(publicKey[0]);
+        BigInteger n = BigInteger.valueOf(publicKey[1]);
+
+        byte[] data = plaintext.getBytes(StandardCharsets.UTF_8);
+        int blockSize = (n.bitLength() - 1) / 8;
+
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < data.length; i += blockSize) {
+            int len = Math.min(blockSize, data.length - i);
+
+            byte[] block = Arrays.copyOfRange(data, i, i + len);
+            BigInteger m = new BigInteger(1, block);
+            // Anzahl Operationen wird erhöht, da der Block in Zahlen umgewandelt werden muss.
             operationsCount++;
 
-            ciphertext.append(cipherChar).append(" ");
+            BigInteger c = m.modPow(e, n);
+            //Anzahl Operationen muss erhöht werden, da hier die Verschlüsselung mittels Multiplikation und Modulo durchgeführt wird.
+            operationsCount++;
+            String encoded = Base64.getEncoder().encodeToString(c.toByteArray());
+
+            result.append(encoded);
             // Anzahl Operationen wird erhöht, da die verschlüsselte Zahl zum Ciphertext hinzugefügt wird.
             operationsCount++;
         }
-        return ciphertext.toString();
-
-    }
-
-    @Override
-    public String decrypt(String ciphertext, RSAParams params) {
-        return "";
+        return result.toString();
     }
 }

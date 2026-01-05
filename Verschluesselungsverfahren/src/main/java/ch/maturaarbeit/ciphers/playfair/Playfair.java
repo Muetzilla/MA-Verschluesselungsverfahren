@@ -1,14 +1,15 @@
 package ch.maturaarbeit.ciphers.playfair;
 
 import ch.maturaarbeit.ciphers.Cipher;
-import ch.maturaarbeit.ciphers.DecryptParams;
-import ch.maturaarbeit.ciphers.EncryptParams;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * @Author
+ * Implementiert die Playfair Chiffre
+ */
 public class Playfair implements Cipher {
     private String key;
     private long operationsCount = 0;
@@ -38,16 +39,20 @@ public class Playfair implements Cipher {
         this.operationsCount = operationsCount;
     }
 
+    /**
+     * Name der Chiffre
+     * @return Name der Chiffre
+     */
     @Override
     public String name() {
         return "Playfair";
     }
 
-    @Override
-    public String decrypt(String ciphertext, DecryptParams params) {
-        return "";
-    }
-
+    /**
+     * Playfair Chiffre Verschlüsselung
+     * @param plaintext der Klartext
+     * @return der verschlüsselte Text
+     */
     @Override
     public String encrypt(String plaintext) {
         char[][] sq = new char[5][5];
@@ -70,6 +75,13 @@ public class Playfair implements Cipher {
         return ciphertext.toString();
     }
 
+    /**
+     * Erstellt das 5x5 Quadrat basierend auf dem Schlüsselwort
+     * @param key das Schlüsselwort
+     * @param sq das 5x5 Quadrat
+     * @param row die Zeilenpositionen der Buchstaben
+     * @param col die Spaltenpositionen der Buchstaben
+     */
     private void buildSquare(String key, char[][] sq, int[] row, int[] col) {
         boolean[] seen = new boolean[26];
         int pos = 0;
@@ -83,8 +95,6 @@ public class Playfair implements Cipher {
                 row[idx] = pos / 5;
                 col[idx] = pos % 5;
                 pos++;
-                // Anzahl der Operationen wird erhöht, da ein neues Zeichen ins Quadrat eingefügt wird.
-                operationsCount++;
             }
         }
 
@@ -97,12 +107,15 @@ public class Playfair implements Cipher {
                 row[idx] = pos / 5;
                 col[idx] = pos % 5;
                 pos++;
-                // Anzahl der Operationen wird erhöht, da ein neues Zeichen ins Quadrat eingefügt wird.
-                operationsCount++;
             }
         }
     }
 
+    /**
+     * Bereitet den Text auf die Verschlüsselung vor und entfernt unerwünschte Zeichen
+     * @param s der Eingabetext
+     * @return der vorbereitete Text
+     */
     private String normalize(String s) {
         StringBuilder b = new StringBuilder();
         for (char ch : s.toUpperCase(Locale.ROOT).toCharArray()) {
@@ -119,6 +132,11 @@ public class Playfair implements Cipher {
         return b.toString();
     }
 
+    /**
+     * Teilt den Text in Paare auf und fügt bei Bedarf 'X' ein
+     * @param t der vorbereitete Text
+     * @return die Liste der Zeichenpaare
+     */
     private List<char[]> toPairs(String t) {
         StringBuilder buf = new StringBuilder(t);
         List<char[]> pairs = new ArrayList<>();
@@ -144,6 +162,15 @@ public class Playfair implements Cipher {
         return pairs;
     }
 
+    /**
+     * Verschlüsselt ein Zeichenpaar basierend auf den Playfair Regeln
+     * @param a das erste Zeichen
+     * @param b das zweite Zeichen
+     * @param sq das 5x5 Quadrat
+     * @param row die Zeilenpositionen der Buchstaben
+     * @param col die Spaltenpositionen der Buchstaben
+     * @return das verschlüsselte Zeichenpaar
+     */
     private String encryptPair(char a, char b, char[][] sq, int[] row, int[] col) {
         int ra = row[a - 'A'];
         int ca = col[a - 'A'];
